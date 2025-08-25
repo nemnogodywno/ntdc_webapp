@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .models import Device
 
 def home_view(request):
     """Главная страница - доступна всем"""
@@ -21,3 +22,9 @@ def admin_panel_view(request):
         return render(request, 'main/access_denied.html', status=403)
 
     return render(request, 'main/admin_panel.html')
+
+@login_required
+def devices_list_view(request):
+    """Страница списка устройств"""
+    devices = Device.objects.select_related('part', 'part__type').all()
+    return render(request, 'main/devices_list.html', {'devices': devices})
