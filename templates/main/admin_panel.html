@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Админ панель{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Админ панель</h2>
+            <span class="badge bg-danger fs-6">Только для администраторов</span>
+        </div>
+
+        <div class="alert alert-warning">
+            <h5 class="alert-heading">🔒 Административная область</h5>
+            <p>Добро пожаловать в админ панель! Здесь вы можете управлять системой и пользователями.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">👥 Управление пользователями</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Управление учетными записями пользователей, права доступа и роли.</p>
+                        <a href="/admin/accounts/customuser/" class="btn btn-primary" target="_blank">
+                            Перейти к пользователям
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">⚙️ Системные настройки</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Конфигурация системы, параметры безопасности и общие настройки.</p>
+                        <a href="/admin/" class="btn btn-success" target="_blank">
+                            Django Admin
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">📊 Аналитика</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Статистика использования системы и отчеты о активности пользователей.</p>
+                        <button class="btn btn-info" disabled>
+                            Скоро доступно
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Быстрая статистика</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Всего пользователей:</strong> <span class="text-primary">{{ users_count|default:"N/A" }}</span></li>
+                            <li><strong>Администраторов:</strong> <span class="text-danger">{{ admin_count|default:"N/A" }}</span></li>
+                            <li><strong>Активных сессий:</strong> <span class="text-success">{{ active_sessions|default:"N/A" }}</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Последние действия</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Функция логирования будет добавлена в следующих версиях.</p>
+                        <small class="text-muted">Здесь будут отображаться последние действия администраторов.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                ← Вернуться в панель управления
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

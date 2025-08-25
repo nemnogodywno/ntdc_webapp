@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="jumbotron bg-light p-5 rounded-3">
+            <h1 class="display-4">Добро пожаловать!</h1>
+            <p class="lead">Это главная страница нашего веб-приложения, созданного с использованием Django и PostgreSQL.</p>
+            <hr class="my-4">
+
+            {% if user.is_authenticated %}
+                <p>Привет, <strong>{{ user.first_name }} {{ user.last_name }}</strong>!</p>
+                <p>Вы авторизованы как: 
+                    {% if user.is_admin_user %}
+                        <span class="badge bg-danger">Администратор</span>
+                    {% else %}
+                        <span class="badge bg-primary">Обычный пользователь</span>
+                    {% endif %}
+                </p>
+                <a class="btn btn-primary btn-lg" href="{% url 'dashboard' %}" role="button">
+                    Перейти в панель управления
+                </a>
+            {% else %}
+                <p>Для доступа к функциям приложения, пожалуйста, войдите в систему или зарегистрируйтесь.</p>
+                <a class="btn btn-primary btn-lg me-2" href="{% url 'accounts:login' %}" role="button">
+                    Войти
+                </a>
+                <a class="btn btn-success btn-lg" href="{% url 'accounts:register' %}" role="button">
+                    Зарегистрироваться
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">🔒 Безопасность</h5>
+                        <p class="card-text">Система с двумя типами пользователей: обычные пользователи и администраторы.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">⚡ Производительность</h5>
+                        <p class="card-text">Построено на Django с использованием PostgreSQL для высокой производительности.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">🎨 Интерфейс</h5>
+                        <p class="card-text">Современный адаптивный дизайн с использованием Bootstrap 5.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

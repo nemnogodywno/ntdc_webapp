@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Доступ запрещен{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto text-center">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">🚫 Доступ запрещен</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">У вас нет прав для доступа к этой странице</h5>
+                <p class="card-text">
+                    Эта страница доступна только администраторам. 
+                    Если вы считаете, что это ошибка, обратитесь к администратору системы.
+                </p>
+                <div class="mt-3">
+                    <a href="{% url 'home' %}" class="btn btn-primary">
+                        🏠 На главную
+                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                            📊 В панель управления
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
