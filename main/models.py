@@ -76,7 +76,7 @@ class Part(models.Model):
 class Device(models.Model):
     serial = models.CharField(max_length=255, verbose_name='Серийный номер')
     desc = models.TextField(blank=True, verbose_name='Описание')
-    part = models.ForeignKey(Part, on_delete=models.CASCADE, verbose_name='Модель')
+    parts = models.ManyToManyField(Part, verbose_name='Модели/Узлы', blank=True)
 
     class Meta:
         db_table = 'devices'
@@ -84,7 +84,15 @@ class Device(models.Model):
         verbose_name_plural = 'Устройства'
 
     def __str__(self):
-        return f"{self.serial} ({self.part.name})"
+        parts_list = ', '.join([part.name for part in self.parts.all()[:3]])
+        if self.parts.count() > 3:
+            parts_list += '...'
+        return f"{self.serial} ({parts_list})"
+
+    @property
+    def main_part(self):
+        """Возвращает первую часть как основную"""
+        return self.parts.first()
 
 class User(models.Model):
     name = models.CharField(max_length=255, verbose_name='Имя')

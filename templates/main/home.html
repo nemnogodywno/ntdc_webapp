@@ -1,60 +1,60 @@
 {% extends 'base.html' %}
 
-{% block title %}Главная страница{% endblock %}
+{% block title %}Главная - НТДЦ{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="jumbotron bg-light p-5 rounded-3">
-            <h1 class="display-4">Добро пожаловать!</h1>
-            <p class="lead">Это главная страница нашего веб-приложения, созданного с использованием Django и PostgreSQL.</p>
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+            <h1 class="display-4">
+                <i class="fas fa-microchip me-3"></i>
+                Добро пожаловать в НТДЦ
+            </h1>
+            <p class="lead">Система электронного сопровождения производства опытных образцов</p>
             <hr class="my-4">
-
-            {% if user.is_authenticated %}
-                <p>Привет, <strong>{{ user.first_name }} {{ user.last_name }}</strong>!</p>
-                <p>Вы авторизованы как: 
-                    {% if user.is_admin_user %}
-                        <span class="badge bg-danger">Администратор</span>
-                    {% else %}
-                        <span class="badge bg-primary">Обычный пользователь</span>
-                    {% endif %}
-                </p>
-                <a class="btn btn-primary btn-lg" href="{% url 'dashboard' %}" role="button">
-                    Перейти в панель управления
-                </a>
-            {% else %}
-                <p>Для доступа к функциям приложения, пожалуйста, войдите в систему или зарегистрируйтесь.</p>
-                <a class="btn btn-primary btn-lg me-2" href="{% url 'accounts:login' %}" role="button">
-                    Войти
-                </a>
-                <a class="btn btn-success btn-lg" href="{% url 'accounts:register' %}" role="button">
-                    Зарегистрироваться
-                </a>
-            {% endif %}
+            <p>Управляйте устройствами, отслеживайте операции и контролируйте производственные процессы.</p>
         </div>
 
-        <div class="row mt-5">
+        <div class="row">
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title">🔒 Безопасность</h5>
-                        <p class="card-text">Система с двумя типами пользователей: обычные пользователи и администраторы.</p>
+                        <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Управление устройствами</h5>
+                        <p class="card-text">Регистрация, отслеживание и управление всеми устройствами в производстве.</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'main:devices_list' %}" class="btn btn-primary btn-sm mt-2">
+                                <i class="fas fa-arrow-right me-1"></i>Перейти
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title">⚡ Производительность</h5>
-                        <p class="card-text">Построено на Django с использованием PostgreSQL для высокой производительности.</p>
+                        <i class="fas fa-cogs fa-3x text-info mb-3"></i>
+                        <h5 class="card-title">Детали и узлы</h5>
+                        <p class="card-text">Управление каталогом деталей и узлов, создание иерархической структуры.</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'main:parts_list' %}" class="btn btn-info btn-sm mt-2">
+                                <i class="fas fa-arrow-right me-1"></i>Перейти
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title">🎨 Интерфейс</h5>
-                        <p class="card-text">Современный адаптивный дизайн с использованием Bootstrap 5.</p>
+                        <i class="fas fa-history fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">История операций</h5>
+                        <p class="card-text">Ведение записей всех операций с устройствами, их перемещений и результатов.</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'main:journal_list' %}" class="btn btn-success btn-sm mt-2">
+                                <i class="fas fa-arrow-right me-1"></i>Перейти
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

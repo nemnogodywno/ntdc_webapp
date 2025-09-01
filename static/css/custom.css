@@ -1,74 +1,125 @@
-/* Кастомные стили для приложения */
-
-.navbar-brand {
-    font-weight: 700;
+/* Стили для зафиксированного футера */
+.min-vh-100 {
+    min-height: 100vh;
 }
 
-.jumbotron {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Стили для множественного выбора */
+select[multiple] {
+    height: auto !important;
+    min-height: 200px;
+}
+
+select[multiple] option {
+    padding: 8px 12px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid #eee;
+}
+
+select[multiple] option:hover {
+    background-color: #e9ecef;
+}
+
+select[multiple] option:checked {
+    background-color: #007bff;
     color: white;
 }
 
+/* Стили для карточек */
 .card {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    border-radius: 10px;
+    transition: transform 0.2s;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-}
-
-.btn {
-    border-radius: 25px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* Стилизация карточек с частями */
+.part-card {
+    transition: all 0.2s ease-in-out;
+}
+
+.part-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Стили для jumbotron */
+.jumbotron {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+/* Стили для таблиц */
+.table-hover tbody tr:hover {
+    background-color: rgba(0,123,255,0.1);
+}
+
+/* Стили для кнопок */
+.btn-group .btn {
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+/* Стили для навигации */
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Стили для формы поиска */
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+/* Стили для алертов */
 .alert {
-    border-radius: 10px;
     border: none;
+    border-left: 4px solid;
 }
 
-.badge {
-    font-size: 0.75em;
-    padding: 0.35em 0.65em;
+.alert-success {
+    border-left-color: #28a745;
 }
 
-.footer {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+.alert-warning {
+    border-left-color: #ffc107;
 }
 
-/* Адаптивность для мобильных устройств */
+.alert-danger {
+    border-left-color: #dc3545;
+}
+
+.alert-info {
+    border-left-color: #17a2b8;
+}
+
+/* Стили для иконок */
+.fa-microchip {
+    color: #007bff;
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
-    .jumbotron {
-        padding: 2rem 1rem;
+    .btn-group {
+        display: flex;
+        flex-direction: column;
     }
 
-    .card {
-        margin-bottom: 1rem;
+    .btn-group .btn {
+        border-radius: 0.375rem !important;
+        margin-bottom: 2px;
     }
-}
 
-/* Анимации */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.card, .alert {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Темная тема (опционально) */
-@media (prefers-color-scheme: dark) {
-    .bg-light {
-        background-color: #343a40 !important;
-        color: white;
+    .table-responsive {
+        font-size: 0.875rem;
     }
 }

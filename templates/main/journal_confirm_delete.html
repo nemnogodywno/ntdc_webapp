@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-exclamation-triangle me-2"></i>{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-warning me-2"></i>
+                    <strong>Внимание!</strong> Это действие нельзя отменить.
+                </div>
+
+                <p>Вы действительно хотите удалить эту запись операции?</p>
+
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6>Информация о записи:</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Устройство:</strong> {{ journal_entry.device.serial }}</li>
+                            <li><strong>Операция:</strong> {{ journal_entry.operation.name }}</li>
+                            <li><strong>Дата/время:</strong> {{ journal_entry.time|date:"d.m.Y H:i" }}</li>
+                            <li><strong>Исполнитель:</strong> {{ journal_entry.user.surname }} {{ journal_entry.user.name }}</li>
+                            <li><strong>Статус:</strong> {{ journal_entry.status.name }}</li>
+                            <li><strong>Место:</strong> {{ journal_entry.location.name }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'main:journal_detail' journal_entry.id %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Удалить запись
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

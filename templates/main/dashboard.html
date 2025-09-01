@@ -1,94 +1,68 @@
 {% extends 'base.html' %}
 
-{% block title %}Панель управления{% endblock %}
+{% block title %}Панель управления - НТДЦ{% endblock %}
 
 {% block content %}
 <div class="row">
-    <div class="col-lg-10 mx-auto">
-        <h2>Панель управления</h2>
-        <p class="text-muted">Добро пожаловать в вашу личную панель управления</p>
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt me-2"></i>Панель управления</h2>
+        <p class="text-muted">Добро пожаловать, {{ user.username }}!</p>
 
         <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Информация о пользователе</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-borderless">
-                            <tr>
-                                <th>Имя пользователя:</th>
-                                <td>{{ user.username }}</td>
-                            </tr>
-                            <tr>
-                                <th>Полное имя:</th>
-                                <td>{{ user.first_name }} {{ user.last_name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Email:</th>
-                                <td>{{ user.email }}</td>
-                            </tr>
-                            <tr>
-                                <th>Тип пользователя:</th>
-                                <td>
-                                    {% if user.is_admin_user %}
-                                        <span class="badge bg-danger">Администратор</span>
-                                    {% else %}
-                                        <span class="badge bg-primary">Обычный пользователь</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Дата регистрации:</th>
-                                <td>{{ user.date_joined|date:"d.m.Y H:i" }}</td>
-                            </tr>
-                        </table>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-primary">
+                    <div class="card-body text-center">
+                        <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Устройства</h5>
+                        <p class="card-text">Просмотр и управление устройствами</p>
+                        <a href="{% url 'main:devices_list' %}" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-1"></i>Перейти
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Быстрые действия</h5>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-info">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cogs fa-3x text-info mb-3"></i>
+                        <h5 class="card-title">Детали/Узлы</h5>
+                        <p class="card-text">Управление каталогом деталей и узлов</p>
+                        <a href="{% url 'main:parts_list' %}" class="btn btn-info">
+                            <i class="fas fa-arrow-right me-1"></i>Перейти
+                        </a>
                     </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            {% if user.is_admin_user %}
-                                <a href="{% url 'admin_panel' %}" class="btn btn-danger">
-                                    🛠️ Админ панель
-                                </a>
-                                <a href="/admin/" class="btn btn-warning" target="_blank">
-                                    ⚙️ Django Admin
-                                </a>
-                            {% endif %}
-                            <a href="{% url 'home' %}" class="btn btn-primary">
-                                🏠 Главная страница
-                            </a>
-                            <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary">
-                                🚪 Выйти из системы
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-success">
+                    <div class="card-body text-center">
+                        <i class="fas fa-history fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">История операций</h5>
+                        <p class="card-text">Ведение записей операций и перемещений</p>
+                        <a href="{% url 'main:journal_list' %}" class="btn btn-success">
+                            <i class="fas fa-arrow-right me-1"></i>Перейти
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if user.is_staff or user.is_superuser %}
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card border-warning">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cogs fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title">Администрирование</h5>
+                            <p class="card-text">Управление системой</p>
+                            <a href="{% url 'main:admin_panel' %}" class="btn btn-warning">
+                                <i class="fas fa-arrow-right me-1"></i>Перейти
                             </a>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
-
-        {% if user.is_admin_user %}
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="alert alert-info">
-                    <h5 class="alert-heading">Административные права</h5>
-                    <p>У вас есть права администратора. Вы можете:</p>
-                    <ul class="mb-0">
-                        <li>Управлять пользователями через админ панель</li>
-                        <li>Доступ к расширенным функциям системы</li>
-                        <li>Просмотр статистики и аналитики</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
