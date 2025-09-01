@@ -1,63 +1,49 @@
 {% extends 'base.html' %}
 
-{% block title %}Вход в систему{% endblock %}
+{% block title %}Вход в систему - НТДЦ{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6 mx-auto">
+<div class="row justify-content-center">
+    <div class="col-md-5">
         <div class="card">
             <div class="card-header">
-                <h4 class="text-center mb-0">🔐 Вход в систему</h4>
+                <h4><i class="fas fa-sign-in-alt me-2"></i>Вход в систему</h4>
             </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
 
-                    {% if form.non_field_errors %}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Имя пользователя</label>
+                        <input type="text" name="username" class="form-control" id="id_username" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Пароль</label>
+                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    </div>
+
+                    {% if form.errors %}
                         <div class="alert alert-danger">
-                            {{ form.non_field_errors }}
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            {% endfor %}
                         </div>
                     {% endif %}
 
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                            {{ form.username.label }}
-                        </label>
-                        <input type="text" name="username" class="form-control" 
-                               id="{{ form.username.id_for_label }}" 
-                               value="{{ form.username.value|default:'' }}" required>
-                        {% if form.username.errors %}
-                            <div class="text-danger mt-1">
-                                {{ form.username.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">
-                            {{ form.password.label }}
-                        </label>
-                        <input type="password" name="password" class="form-control" 
-                               id="{{ form.password.id_for_label }}" required>
-                        {% if form.password.errors %}
-                            <div class="text-danger mt-1">
-                                {{ form.password.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
-
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">
-                            Войти
+                            <i class="fas fa-sign-in-alt me-1"></i>Войти
                         </button>
                     </div>
                 </form>
-            </div>
-            <div class="card-footer text-center">
-                <p class="mb-0">
-                    Нет аккаунта? 
-                    <a href="{% url 'accounts:register' %}">Зарегистрироваться</a>
-                </p>
+
+                <hr>
+                <div class="text-center">
+                    <p>Нет аккаунта? <a href="{% url 'accounts:register' %}">Зарегистрироваться</a></p>
+                </div>
             </div>
         </div>
     </div>

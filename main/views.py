@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.db.models import Q
 from .models import Device, Part, Journal, PartType, Operation, Status, Location, User
 from .forms import DeviceForm, JournalForm, PartForm
+from .qr_utils import get_device_url_qr, get_device_info_qr, get_part_url_qr, get_part_info_qr
 
 def is_admin(user):
     """Проверка, является ли пользователь администратором"""
@@ -58,11 +59,17 @@ def device_detail(request, device_id):
     # Получаем компоненты (дочерние части) для всех частей устройства
     child_parts = Part.objects.filter(parent__in=device.parts.all()).distinct()
 
+    # Генерируем QR-коды
+    url_qr = get_device_url_qr(device, request)
+    info_qr = get_device_info_qr(device)
+
     context = {
         'device': device,
         'journal_entries': journal_entries,
         'child_parts': child_parts,
-        'is_admin': is_admin(request.user)
+        'is_admin': is_admin(request.user),
+        'url_qr': url_qr,
+        'info_qr': info_qr
     }
     return render(request, 'main/device_detail.html', context)
 
@@ -290,11 +297,17 @@ def part_detail(request, part_id):
     # Получаем устройства, которые используют эту деталь
     devices_using = Device.objects.filter(parts=part).prefetch_related('parts')
 
+    # Генерируем QR-коды
+    url_qr = get_part_url_qr(part, request)
+    info_qr = get_part_info_qr(part)
+
     context = {
         'part': part,
         'child_parts': child_parts,
         'devices_using': devices_using,
-        'is_admin': is_admin(request.user)
+        'is_admin': is_admin(request.user),
+        'url_qr': url_qr,
+        'info_qr': info_qr
     }
     return render(request, 'main/part_detail.html', context)
 

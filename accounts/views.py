@@ -25,7 +25,8 @@ def register_view(request):
             user = form.save()
             messages.success(request, 'Регистрация прошла успешно! Теперь вы можете войти в систему.')
             login(request, user)  # Автоматически входим после регистрации
-            return redirect('home')
+            # Исправляем ссылку с 'home' на 'main:home'
+            return redirect('main:home')
     else:
         form = CustomUserCreationForm()
 

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-edit me-2"></i>{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">
+                                    {{ form.name.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.decimal_num.id_for_label }}" class="form-label">
+                                    {{ form.decimal_num.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.decimal_num }}
+                                {% if form.decimal_num.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.decimal_num.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.type.id_for_label }}" class="form-label">
+                                    {{ form.type.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.type }}
+                                {% if form.type.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.type.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.parent.id_for_label }}" class="form-label">
+                                    {{ form.parent.label }}
+                                </label>
+                                {{ form.parent }}
+                                <div class="form-text">Выберите родительский узел, если деталь является частью другого узла</div>
+                                {% if form.parent.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.parent.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.desc.id_for_label }}" class="form-label">
+                            {{ form.desc.label }}
+                        </label>
+                        {{ form.desc }}
+                        <div class="form-text">Подробное описание детали/узла, назначение, характеристики</div>
+                        {% if form.desc.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.desc.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% if part %}{% url 'main:part_detail' part.id %}{% else %}{% url 'main:parts_list' %}{% endif %}"
+                           class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

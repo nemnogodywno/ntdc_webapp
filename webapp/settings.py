@@ -65,9 +65,13 @@ DATABASES = {
         'PORT': config('DB_PORT', default='5432'),
     }
 }
-
-# Custom user model
+# Используем кастомную модель пользователя
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# Authentication settings
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -99,8 +103,3 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Login/Logout URLs
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
