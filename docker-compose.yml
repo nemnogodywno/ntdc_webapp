@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ntdc-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-ntdc}
+      POSTGRES_USER: ${DB_USER:-ntdc}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ntdc}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # можно убрать во внешней среде
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    container_name: ntdc-web
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-ntdc}
+      DB_USER: ${DB_USER:-ntdc}
+      DB_PASSWORD: ${DB_PASSWORD:-ntdc}
+      DEBUG: ${DEBUG:-1}
+      SECRET_KEY: ${SECRET_KEY:-change-me-secret}
+      DJANGO_SETTINGS_MODULE: webapp.settings
+    volumes:
+      - ./:/app
+      - static_data:/app/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    # Для разработки можно раскомментировать:
+    # command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+volumes:
+  pgdata:
+  static_data:
+
+networks:
+  default:
+    name: ntdc-net
+
