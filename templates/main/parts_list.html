@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load b64filters %}
 
 {% block title %}Детали/Узлы - НТДЦ{% endblock %}
 
@@ -57,10 +58,13 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Название</th>
+                            <th>Серийный номер</th>
                             <th>Децимальный номер</th>
                             <th>Тип</th>
                             <th>Родительский узел</th>
+                            <th>Используется</th>
                             <th>Описание</th>
+                            <th>Фото</th>
                             <th>Действия</th>
                         </tr>
                     </thead>
@@ -72,6 +76,7 @@
                                         {{ part.name }}
                                     </a>
                                 </td>
+                                <td>{{ part.serial }}</td>
                                 <td>{{ part.decimal_num }}</td>
                                 <td>
                                     <span class="badge bg-secondary">{{ part.type.name }}</span>
@@ -87,10 +92,24 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    {% if part.is_used %}
+                                        <span class="badge bg-success">Да</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Нет</span>
+                                    {% endif %}
+                                </td>
+                                <td>
                                     {% if part.desc %}
                                         {{ part.desc|truncatechars:60 }}
                                     {% else %}
                                         <span class="text-muted">Нет описания</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if part.image %}
+                                        <img src="data:image/png;base64,{{ part.image|b64encode }}" alt="Фото" style="max-width:60px;max-height:60px;" class="rounded border">
+                                    {% else %}
+                                        <span class="text-muted">Нет фото</span>
                                     {% endif %}
                                 </td>
                                 <td>

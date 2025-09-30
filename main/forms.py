@@ -2,10 +2,15 @@ from django import forms
 from .models import Device, Part, Journal, Operation, Status, Location, User, PartType
 
 class DeviceForm(forms.ModelForm):
+    image = forms.FileField(required=False, label='Фото устройства')
     class Meta:
         model = Device
-        fields = ['serial', 'desc', 'parts']
+        fields = ['name', 'serial', 'desc', 'parts', 'image']
         widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите название устройства'
+            }),
             'serial': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Введите серийный номер'
@@ -22,18 +27,17 @@ class DeviceForm(forms.ModelForm):
             })
         }
         labels = {
+            'name': 'Название устройства',
             'serial': 'Серийный номер',
             'desc': 'Описание',
-            'parts': 'Модели/Узлы'
+            'parts': 'Модели/Узлы',
+            'image': 'Фото устройства',
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Добавляем возможность выбора всех частей с группировкой по типам
-        self.fields['parts'].queryset = Part.objects.select_related('type').order_by('type__name', 'name')
+        self.fields['parts'].queryset = Part.objects.filter(is_used=False).select_related('type').order_by('type__name', 'name')
         self.fields['parts'].help_text = 'Удерживайте Ctrl (Cmd на Mac) для выбора нескольких элементов'
-
-        # Создаем красивый список с информацией о типе
         choices = []
         for part in self.fields['parts'].queryset:
             label = f"{part.name} ({part.type.name}) - {part.decimal_num}"
@@ -41,13 +45,18 @@ class DeviceForm(forms.ModelForm):
         self.fields['parts'].choices = choices
 
 class PartForm(forms.ModelForm):
+    image = forms.FileField(required=False, label='Фото детали/узла')
     class Meta:
         model = Part
-        fields = ['name', 'decimal_num', 'desc', 'parent', 'type']
+        fields = ['name', 'serial', 'decimal_num', 'desc', 'parent', 'type', 'image']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Введите название детали/узла'
+            }),
+            'serial': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите серийный номер'
             }),
             'decimal_num': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -67,24 +76,23 @@ class PartForm(forms.ModelForm):
         }
         labels = {
             'name': 'Название детали/узла',
+            'serial': 'Серийный номер',
             'decimal_num': 'Децимальный номер',
             'desc': 'Описание',
             'parent': 'Родительский узел',
-            'type': 'Тип'
+            'type': 'Тип',
+            'image': 'Фото детали/узла',
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Настраиваем выбор родительских узлов (исключаем саму деталь при редактировании)
+        # parent можно выбрать любой, кроме самого себя
         if self.instance and self.instance.pk:
             self.fields['parent'].queryset = Part.objects.exclude(pk=self.instance.pk).select_related('type')
         else:
             self.fields['parent'].queryset = Part.objects.select_related('type').all()
-
         self.fields['parent'].empty_label = "Выберите родительский узел (опционально)"
         self.fields['type'].empty_label = "Выберите тип"
-
-        # Добавляем информацию о типе в выбор родительского узла
         parent_choices = [(None, "Выберите родительский узел (опционально)")]
         for part in self.fields['parent'].queryset.order_by('type__name', 'name'):
             label = f"{part.name} ({part.type.name}) - {part.decimal_num}"

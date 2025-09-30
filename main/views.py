@@ -80,9 +80,13 @@ def device_edit(request, device_id):
     device = get_object_or_404(Device, id=device_id)
 
     if request.method == 'POST':
-        form = DeviceForm(request.POST, instance=device)
+        form = DeviceForm(request.POST, request.FILES, instance=device)
         if form.is_valid():
-            form.save()
+            device = form.save(commit=False)
+            if request.FILES.get('image'):
+                device.image = request.FILES['image'].read()
+            device.save()
+            form.save_m2m()
             messages.success(request, f'Устройство {device.serial} успешно обновлено')
             return redirect('main:device_detail', device_id=device.id)
     else:
@@ -100,9 +104,13 @@ def device_edit(request, device_id):
 def device_create(request):
     """Создание нового устройства (только для админов)"""
     if request.method == 'POST':
-        form = DeviceForm(request.POST)
+        form = DeviceForm(request.POST, request.FILES)
         if form.is_valid():
-            device = form.save()
+            device = form.save(commit=False)
+            if request.FILES.get('image'):
+                device.image = request.FILES['image'].read()
+            device.save()
+            form.save_m2m()
             messages.success(request, f'Устройство {device.serial} успешно создано')
             return redirect('main:device_detail', device_id=device.id)
     else:
@@ -316,9 +324,13 @@ def part_detail(request, part_id):
 def part_create(request):
     """Создание новой детали/узла (только для админов)"""
     if request.method == 'POST':
-        form = PartForm(request.POST)
+        form = PartForm(request.POST, request.FILES)
         if form.is_valid():
-            part = form.save()
+            part = form.save(commit=False)
+            if request.FILES.get('image'):
+                part.image = request.FILES['image'].read()
+            part.save()
+            form.save_m2m()
             messages.success(request, f'Деталь/узел "{part.name}" успешно создан')
             return redirect('main:part_detail', part_id=part.id)
     else:
@@ -337,10 +349,14 @@ def part_edit(request, part_id):
     part = get_object_or_404(Part, id=part_id)
 
     if request.method == 'POST':
-        form = PartForm(request.POST, instance=part)
+        form = PartForm(request.POST, request.FILES, instance=part)
         if form.is_valid():
-            form.save()
-            messages.success(request, f'Деталь/узел "{part.name}" успешно обновлен')
+            part = form.save(commit=False)
+            if request.FILES.get('image'):
+                part.image = request.FILES['image'].read()
+            part.save()
+            form.save_m2m()
+            messages.success(request, f'Деталь/узел "{part.name}" успешно обновлена')
             return redirect('main:part_detail', part_id=part.id)
     else:
         form = PartForm(instance=part)
@@ -348,7 +364,7 @@ def part_edit(request, part_id):
     context = {
         'form': form,
         'part': part,
-        'title': f'Редактирование детали/узла "{part.name}"'
+        'title': f'Редактирование детали/узла {part.name}'
     }
     return render(request, 'main/part_form.html', context)
 

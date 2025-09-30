@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load b64filters %}
 
 {% block title %}{{ part.name }} - Деталь/Узел - НТДЦ{% endblock %}
 
@@ -40,12 +41,17 @@
                                 <span class="text-primary">{{ part.name }}</span>
                             </div>
                             <div class="col-md-6">
+                                <strong>Серийный номер:</strong><br>
+                                <span class="text-primary">{{ part.serial }}</span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
                                 <strong>Децимальный номер:</strong><br>
                                 {{ part.decimal_num }}
                             </div>
                         </div>
-                        <hr>
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-md-6">
                                 <strong>Тип:</strong><br>
                                 <span class="badge bg-secondary">{{ part.type.name }}</span>
@@ -53,20 +59,24 @@
                             <div class="col-md-6">
                                 <strong>Родительский узел:</strong><br>
                                 {% if part.parent %}
-                                    <a href="{% url 'main:part_detail' part.parent.id %}" class="text-decoration-none">
-                                        {{ part.parent.name }}
-                                    </a>
-                                    <br><small class="text-muted">{{ part.parent.decimal_num }}</small>
+                                    <span class="badge bg-info">{{ part.parent.name }}</span>
                                 {% else %}
-                                    <span class="text-muted">Корневой узел</span>
+                                    <span class="text-muted">Нет</span>
                                 {% endif %}
                             </div>
                         </div>
+                        <hr>
+                        {% if part.image %}
+                        <div class="mb-3">
+                            <strong>Фото детали/узла:</strong><br>
+                            <img src="data:image/png;base64,{{ part.image|b64encode }}" alt="Фото детали/узла" class="img-fluid rounded border" style="max-width:300px;">
+                        </div>
+                        {% endif %}
                         {% if part.desc %}
                             <hr>
                             <div class="row">
                                 <div class="col-12">
-                                    <strong>Описание:</strong><br>
+                                    <strong>Описание детали/узла:</strong><br>
                                     {{ part.desc|linebreaks }}
                                 </div>
                             </div>

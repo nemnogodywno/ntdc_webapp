@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load b64filters %}
 
 {% block title %}{{ device.serial }} - Устройство - НТДЦ{% endblock %}
 
@@ -42,8 +43,17 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
+                                <strong>Название:</strong><br>
+                                <span class="text-primary">{{ device.name }}</span>
+                            </div>
+                            <div class="col-md-6">
                                 <strong>Серийный номер:</strong><br>
                                 <span class="text-primary">{{ device.serial }}</span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <!-- Удалено поле Используется -->
                             </div>
                             <div class="col-md-6">
                                 <strong>Количество моделей/узлов:</strong><br>
@@ -51,6 +61,12 @@
                             </div>
                         </div>
                         <hr>
+                        {% if device.image %}
+                        <div class="mb-3">
+                            <strong>Фото устройства:</strong><br>
+                            <img src="data:image/png;base64,{{ device.image|b64encode }}" alt="Фото устройства" class="img-fluid rounded border" style="max-width:300px;">
+                        </div>
+                        {% endif %}
                         <div class="row">
                             <div class="col-12">
                                 <strong>Модели/Узлы:</strong><br>
@@ -59,7 +75,7 @@
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div>
                                                 <h6 class="mb-1">{{ part.name }}</h6>
-                                                <small class="text-muted">Децимальный номер: {{ part.decimal_num }}</small><br>
+                                                <small class="text-muted">Серийный номер: {{ part.serial }}</small><br>
                                                 <span class="badge bg-secondary">{{ part.type.name }}</span>
                                             </div>
                                         </div>
@@ -120,7 +136,7 @@
                                 <div class="mb-2">
                                     <small class="text-muted">{{ part.type.name }}</small><br>
                                     <strong>{{ part.name }}</strong><br>
-                                    <span class="text-muted">{{ part.decimal_num }}</span>
+                                    <span class="text-muted">Серийный номер: {{ part.serial }}</span>
                                 </div>
                                 {% if not forloop.last %}<hr class="my-2">{% endif %}
                             {% endfor %}
