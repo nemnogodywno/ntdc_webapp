@@ -101,8 +101,13 @@ def get_material_part_info_qr(part):
     """
     Генерирует QR-код с текстовой информацией о материальном узле для оффлайн чтения
     """
-    astral_part_name = part.astral_revision.astral_part.name
-    astral_type = part.astral_revision.astral_part.astral_variant.astral_type.name
+    astral_part = part.astral_revision.astral_parts.first()
+    if not astral_part:
+        astral_part_name = "Без узла"
+        astral_type = "Не указан"
+    else:
+        astral_part_name = astral_part.name
+        astral_type = astral_part.astral_variant.astral_type.name
     revision_name = part.astral_revision.name
     manufacturer = part.astral_manufacturer.name
     year = part.astral_year.year
@@ -133,8 +138,13 @@ def get_astral_revision_info_qr(revision):
     """
     Генерирует QR-код с текстовой информацией об астральной ревизии для оффлайн чтения
     """
-    astral_part_name = revision.astral_part.name
-    astral_type = revision.astral_part.astral_variant.astral_type.name
+    astral_part = revision.astral_parts.first()
+    if not astral_part:
+        astral_part_name = "Без узла"
+        astral_type = "Не указан"
+    else:
+        astral_part_name = astral_part.name
+        astral_type = astral_part.astral_variant.astral_type.name
     parent_info = f"РОДИТЕЛЬ: {revision.parent.name}" if revision.parent else "КОРНЕВАЯ РЕВИЗИЯ"
     release_date = revision.release_date.strftime("%d.%m.%Y") if revision.release_date else "Не указана"
 
