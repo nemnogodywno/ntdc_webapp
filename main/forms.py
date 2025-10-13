@@ -1,158 +1,66 @@
 from django import forms
-from .models import Device, Part, Journal, Operation, Status, Location, User, PartType
+from .models import (
+    MaterialPart, MaterialOperations, AstralRevision, AstralPart
+)
 
-class DeviceForm(forms.ModelForm):
-    image = forms.FileField(required=False, label='Фото устройства')
+
+class MaterialPartForm(forms.ModelForm):
+    """Форма для материального узла"""
     class Meta:
-        model = Device
-        fields = ['name', 'serial', 'desc', 'parts', 'image']
+        model = MaterialPart
+        fields = ['serial', 'astral_revision', 'astral_year', 'astral_manufacturer', 'parent']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Введите название устройства'
-            }),
-            'serial': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Введите серийный номер'
-            }),
-            'desc': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Описание устройства'
-            }),
-            'parts': forms.SelectMultiple(attrs={
-                'class': 'form-control',
-                'size': '10',
-                'style': 'height: 200px;'
-            })
-        }
-        labels = {
-            'name': 'Название устройства',
-            'serial': 'Серийный номер',
-            'desc': 'Описание',
-            'parts': 'Модели/Узлы',
-            'image': 'Фото устройства',
+            'serial': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Серийный номер'}),
+            'astral_revision': forms.Select(attrs={'class': 'form-control'}),
+            'astral_year': forms.Select(attrs={'class': 'form-control'}),
+            'astral_manufacturer': forms.Select(attrs={'class': 'form-control'}),
+            'parent': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['parts'].queryset = Part.objects.filter(is_used=False).select_related('type').order_by('type__name', 'name')
-        self.fields['parts'].help_text = 'Удерживайте Ctrl (Cmd на Mac) для выбора нескольких элементов'
-        choices = []
-        for part in self.fields['parts'].queryset:
-            label = f"{part.name} ({part.type.name}) - {part.decimal_num}"
-            choices.append((part.pk, label))
-        self.fields['parts'].choices = choices
 
-class PartForm(forms.ModelForm):
-    image = forms.FileField(required=False, label='Фото детали/узла')
+class MaterialOperationsForm(forms.ModelForm):
+    """Форма для операций"""
     class Meta:
-        model = Part
-        fields = ['name', 'serial', 'decimal_num', 'desc', 'parent', 'type', 'image']
+        model = MaterialOperations
+        fields = ['material_operation_type', 'material_user', 'datetime', 'description',
+                  'file', 'image', 'material_status', 'material_warehouse', 'material_part']
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Введите название детали/узла'
-            }),
-            'serial': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Введите серийный номер'
-            }),
-            'decimal_num': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Введите децимальный номер'
-            }),
-            'desc': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Описание детали/узла'
-            }),
-            'parent': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'type': forms.Select(attrs={
-                'class': 'form-control'
-            })
-        }
-        labels = {
-            'name': 'Название детали/узла',
-            'serial': 'Серийный номер',
-            'decimal_num': 'Децимальный номер',
-            'desc': 'Описание',
-            'parent': 'Родительский узел',
-            'type': 'Тип',
-            'image': 'Фото детали/узла',
+            'material_operation_type': forms.Select(attrs={'class': 'form-control'}),
+            'material_user': forms.Select(attrs={'class': 'form-control'}),
+            'datetime': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'file': forms.FileInput(attrs={'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'material_status': forms.Select(attrs={'class': 'form-control'}),
+            'material_warehouse': forms.Select(attrs={'class': 'form-control'}),
+            'material_part': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # parent можно выбрать любой, кроме самого себя
-        if self.instance and self.instance.pk:
-            self.fields['parent'].queryset = Part.objects.exclude(pk=self.instance.pk).select_related('type')
-        else:
-            self.fields['parent'].queryset = Part.objects.select_related('type').all()
-        self.fields['parent'].empty_label = "Выберите родительский узел (опционально)"
-        self.fields['type'].empty_label = "Выберите тип"
-        parent_choices = [(None, "Выберите родительский узел (опционально)")]
-        for part in self.fields['parent'].queryset.order_by('type__name', 'name'):
-            label = f"{part.name} ({part.type.name}) - {part.decimal_num}"
-            parent_choices.append((part.pk, label))
-        self.fields['parent'].choices = parent_choices
 
-class JournalForm(forms.ModelForm):
+class AstralRevisionForm(forms.ModelForm):
+    """Форма для астральной ревизии"""
     class Meta:
-        model = Journal
-        fields = ['device', 'operation', 'description', 'result', 'user', 'status', 'location', 'time']
+        model = AstralRevision
+        fields = ['name', 'description', 'file', 'image', 'astral_parts', 'parent', 'release_date']
         widgets = {
-            'device': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'operation': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 4,
-                'placeholder': 'Подробное описание операции'
-            }),
-            'result': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Результат выполнения операции'
-            }),
-            'user': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'status': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'location': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'time': forms.DateTimeInput(attrs={
-                'class': 'form-control',
-                'type': 'datetime-local'
-            })
-        }
-        labels = {
-            'device': 'Устройство',
-            'operation': 'Операция',
-            'description': 'Описание',
-            'result': 'Результат',
-            'user': 'Исполнитель',
-            'status': 'Статус',
-            'location': 'Место проведения',
-            'time': 'Дата и время'
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название ревизии'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'file': forms.FileInput(attrs={'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'astral_parts': forms.SelectMultiple(attrs={'class': 'form-control', 'size': '10'}),
+            'parent': forms.Select(attrs={'class': 'form-control'}),
+            'release_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Настраиваем выбор устройств с детальной информацией
-        self.fields['device'].queryset = Device.objects.prefetch_related('parts').all()
-        self.fields['device'].empty_label = "Выберите устройство"
 
-        # Добавляем пустые варианты для обязательных полей
-        self.fields['operation'].empty_label = "Выберите операцию"
-        self.fields['user'].empty_label = "Выберите исполнителя"
-        self.fields['status'].empty_label = "Выберите статус"
-        self.fields['location'].empty_label = "Выберите место"
+class AstralPartForm(forms.ModelForm):
+    """Форма для астрального узла"""
+    class Meta:
+        model = AstralPart
+        fields = ['name', 'decimal_num', 'astral_variant', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название узла'}),
+            'decimal_num': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Децимальный номер'}),
+            'astral_variant': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление операции - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-exclamation-triangle me-2"></i>Подтверждение удаления</h4>
+            </div>
+            <div class="card-body">
+                <p>Вы уверены, что хотите удалить эту операцию?</p>
+
+                <div class="alert alert-warning">
+                    <strong>Тип операции:</strong> {{ operation.material_operation_type.name }}<br>
+                    <strong>Дата:</strong> {{ operation.datetime|date:"d.m.Y H:i" }}<br>
+                    <strong>Узел:</strong> {{ operation.material_part.serial }}
+                </div>
+
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    <strong>Внимание!</strong> Это действие необратимо.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'main:operation_detail' operation.id %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Удалить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

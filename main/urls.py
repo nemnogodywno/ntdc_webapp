@@ -8,24 +8,30 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('admin-panel/', views.admin_panel_view, name='admin_panel'),
 
-    # URLs для устройств
-    path('devices/', views.devices_list, name='devices_list'),
-    path('devices/<int:device_id>/', views.device_detail, name='device_detail'),
-    path('devices/<int:device_id>/edit/', views.device_edit, name='device_edit'),
-    path('devices/create/', views.device_create, name='device_create'),
-    path('devices/<int:device_id>/delete/', views.device_delete, name='device_delete'),
+    # URLs для материальных узлов (основная рабочая таблица)
+    path('material-parts/', views.material_parts_list, name='material_parts_list'),
+    path('material-parts/<int:part_id>/', views.material_part_detail, name='material_part_detail'),
+    path('material-parts/<int:part_id>/edit/', views.material_part_edit, name='material_part_edit'),
+    path('material-parts/create/', views.material_part_create, name='material_part_create'),
+    path('material-parts/<int:part_id>/delete/', views.material_part_delete, name='material_part_delete'),
 
-    # URLs для деталей/узлов
-    path('parts/', views.parts_list, name='parts_list'),
-    path('parts/<int:part_id>/', views.part_detail, name='part_detail'),
-    path('parts/<int:part_id>/edit/', views.part_edit, name='part_edit'),
-    path('parts/create/', views.part_create, name='part_create'),
-    path('parts/<int:part_id>/delete/', views.part_delete, name='part_delete'),
+    # URLs для операций (журнал)
+    path('operations/', views.operations_list, name='operations_list'),
+    path('operations/<int:operation_id>/', views.operation_detail, name='operation_detail'),
+    path('operations/<int:operation_id>/edit/', views.operation_edit, name='operation_edit'),
+    path('operations/create/', views.operation_create, name='operation_create'),
+    path('operations/<int:operation_id>/delete/', views.operation_delete, name='operation_delete'),
 
-    # URLs для истории операций
-    path('journal/', views.journal_list, name='journal_list'),
-    path('journal/<int:journal_id>/', views.journal_detail, name='journal_detail'),
-    path('journal/<int:journal_id>/edit/', views.journal_edit, name='journal_edit'),
-    path('journal/create/', views.journal_create, name='journal_create'),
-    path('journal/<int:journal_id>/delete/', views.journal_delete, name='journal_delete'),
+    # URLs для астральных ревизий
+    path('astral-revisions/', views.astral_revisions_list, name='astral_revisions_list'),
+    path('astral-revisions/<int:revision_id>/', views.astral_revision_detail, name='astral_revision_detail'),
+    path('astral-revisions/<int:revision_id>/edit/', views.astral_revision_edit, name='astral_revision_edit'),
+    path('astral-revisions/create/', views.astral_revision_create, name='astral_revision_create'),
+    path('astral-revisions/<int:revision_id>/delete/', views.astral_revision_delete, name='astral_revision_delete'),
+
+    # URLs для астральных узлов
+    path('astral-parts/', views.astral_parts_list, name='astral_parts_list'),
+    path('astral-parts/<int:part_id>/', views.astral_part_detail, name='astral_part_detail'),
+    path('astral-parts/create/', views.astral_part_create, name='astral_part_create'),
+    path('astral-parts/<int:part_id>/edit/', views.astral_part_edit, name='astral_part_edit'),
 ]

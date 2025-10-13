@@ -30,7 +30,7 @@ services:
       DB_NAME: ${DB_NAME:-ntdc}
       DB_USER: ${DB_USER:-ntdc}
       DB_PASSWORD: ${DB_PASSWORD:-ntdc}
-      DEBUG: ${DEBUG:-1}
+      DEBUG: ${DEBUG:-0}
       SECRET_KEY: ${SECRET_KEY:-change-me-secret}
       DJANGO_SETTINGS_MODULE: webapp.settings
     volumes:

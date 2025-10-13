@@ -7,7 +7,7 @@ from .models import (
     AstralVariant, AstralYear, AstralManufacturer, MaterialStatus, MaterialWarehouse,
     MaterialOperationType, MaterialUser, MaterialGroup
 )
-from .forms import MaterialPartForm, MaterialOperationsForm, AstralRevisionForm, AstralPartForm
+from .forms import MaterialPartForm, MaterialOperationsForm, AstralRevisionForm
 from .qr_utils import get_material_part_url_qr, get_material_part_info_qr, get_astral_revision_url_qr, get_astral_revision_info_qr
 
 
@@ -59,17 +59,17 @@ def material_parts_list(request):
     year_filter = request.GET.get('year', '')
 
     parts = MaterialPart.objects.select_related(
-        'astral_revision',
+        'astral_revision__astral_part__astral_variant__astral_type',
         'astral_year__astral_variant',
         'astral_manufacturer',
         'parent'
-    ).prefetch_related('astral_revision__astral_parts__astral_variant__astral_type').all()
+    ).all()
 
     if search_query:
         parts = parts.filter(
             Q(serial__icontains=search_query) |
             Q(astral_revision__name__icontains=search_query) |
-            Q(astral_revision__astral_parts__name__icontains=search_query)
+            Q(astral_revision__astral_part__name__icontains=search_query)
         )
 
     if manufacturer_filter:
@@ -95,15 +95,11 @@ def material_part_detail(request, part_id):
     """Детальная информация о материальном узле"""
     part = get_object_or_404(
         MaterialPart.objects.select_related(
-            'astral_revision',
+            'astral_revision__astral_part__astral_variant__astral_type',
             'astral_year__astral_variant',
             'astral_manufacturer',
             'parent'
-        ).prefetch_related(
-            'astral_revision__astral_parts__astral_variant__astral_type',
-            'children',
-            'operations'
-        ),
+        ).prefetch_related('children', 'operations'),
         pk=part_id
     )
 
@@ -232,10 +228,10 @@ def operation_detail(request, operation_id):
         MaterialOperations.objects.select_related(
             'material_operation_type',
             'material_user',
-            'material_part__astral_revision',
+            'material_part__astral_revision__astral_part',
             'material_status',
             'material_warehouse'
-        ).prefetch_related('material_part__astral_revision__astral_parts'),
+        ),
         pk=operation_id
     )
 
@@ -312,14 +308,15 @@ def astral_revisions_list(request):
     """Список астральных ревизий"""
     search_query = request.GET.get('search', '')
 
-    revisions = AstralRevision.objects.prefetch_related(
-        'astral_parts__astral_variant__astral_type'
-    ).select_related('parent').all()
+    revisions = AstralRevision.objects.select_related(
+        'astral_part__astral_variant__astral_type',
+        'parent'
+    ).all()
 
     if search_query:
         revisions = revisions.filter(
             Q(name__icontains=search_query) |
-            Q(astral_parts__name__icontains=search_query)
+            Q(astral_part__name__icontains=search_query)
         )
 
     context = {
@@ -334,9 +331,10 @@ def astral_revisions_list(request):
 def astral_revision_detail(request, revision_id):
     """Детальная информация об астральной ревизии"""
     revision = get_object_or_404(
-        AstralRevision.objects.prefetch_related(
-            'astral_parts__astral_variant__astral_type'
-        ).select_related('parent').prefetch_related('material_parts'),
+        AstralRevision.objects.select_related(
+            'astral_part__astral_variant__astral_type',
+            'parent'
+        ).prefetch_related('material_parts'),
         pk=revision_id
     )
 
@@ -430,7 +428,7 @@ def astral_parts_list(request):
     if search_query:
         parts = parts.filter(
             Q(name__icontains=search_query) |
-            Q(decimal_num__icontains=search_query)
+            Q(code__icontains=search_query)
         )
 
     if variant_filter:
@@ -463,45 +461,3 @@ def astral_part_detail(request, part_id):
     }
     return render(request, 'main/astral_part_detail.html', context)
 
-
-@login_required
-@user_passes_test(is_admin)
-def astral_part_create(request):
-    """Создание астрального узла"""
-    if request.method == 'POST':
-        form = AstralPartForm(request.POST)
-        if form.is_valid():
-            part = form.save()
-            messages.success(request, f'Астральный узел {part.name} успешно создан!')
-            return redirect('main:astral_part_detail', part_id=part.id)
-    else:
-        form = AstralPartForm()
-
-    context = {
-        'form': form,
-        'title': 'Создание астрального узла'
-    }
-    return render(request, 'main/astral_part_form.html', context)
-
-
-@login_required
-@user_passes_test(is_admin)
-def astral_part_edit(request, part_id):
-    """Редактирование астрального узла"""
-    part = get_object_or_404(AstralPart, pk=part_id)
-
-    if request.method == 'POST':
-        form = AstralPartForm(request.POST, instance=part)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f'Астральный узел {part.name} успешно обновлен!')
-            return redirect('main:astral_part_detail', part_id=part.id)
-    else:
-        form = AstralPartForm(instance=part)
-
-    context = {
-        'form': form,
-        'part': part,
-        'title': f'Редактирование {part.name}'
-    }
-    return render(request, 'main/astral_part_form.html', context)

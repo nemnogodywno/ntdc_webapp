@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ part.name }} - Астральный узел - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-sitemap me-2"></i>{{ part.name }}</h2>
+                <small class="text-muted">{{ part.decimal_num|default:"—" }}</small>
+            </div>
+            <div class="btn-group" role="group">
+                <a href="{% url 'main:astral_parts_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>К списку
+                </a>
+                {% if is_admin %}
+                    <a href="{% url 'main:astral_part_edit' part.id %}" class="btn btn-outline-warning">
+                        <i class="fas fa-edit me-1"></i>Редактировать
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle me-2"></i>Информация об узле</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Название:</strong><br>
+                                <span class="text-primary fs-5">{{ part.name }}</span>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Децимальный номер:</strong><br>
+                                {{ part.decimal_num|default:"—" }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Тип устройства:</strong><br>
+                                <span class="badge bg-secondary">{{ part.astral_variant.astral_type.name }}</span>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Вариант:</strong><br>
+                                {{ part.astral_variant.name }}
+                            </div>
+                        </div>
+                        {% if part.description %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <strong>Описание:</strong><br>
+                                {{ part.description|linebreaks }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-cogs me-2"></i>Ревизии узла ({{ revisions|length }})</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if revisions %}
+                            <div class="list-group">
+                                {% for revision in revisions %}
+                                    <a href="{% url 'main:astral_revision_detail' revision.id %}"
+                                       class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">{{ revision.name }}</h6>
+                                            <small>{{ revision.release_date|date:"d.m.Y"|default:"Дата не указана" }}</small>
+                                        </div>
+                                        {% if revision.description %}
+                                            <p class="mb-1 small text-muted">{{ revision.description|truncatewords:15 }}</p>
+                                        {% endif %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Для этого узла пока нет ревизий.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6><i class="fas fa-layer-group me-2"></i>Иерархия</h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Тип:</strong><br>{{ part.astral_variant.astral_type.name }}</p>
+                        <p><strong>Вариант:</strong><br>{{ part.astral_variant.name }}</p>
+                        <p><strong>Узел:</strong><br>{{ part.name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                Название ревизии <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.astral_parts.id_for_label }}" class="form-label">
+                                Астральные узлы <span class="text-danger">*</span>
+                            </label>
+                            {{ form.astral_parts }}
+                            {% if form.astral_parts.errors %}
+                                <div class="text-danger small">{{ form.astral_parts.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Удерживайте Ctrl (Cmd на Mac) для выбора нескольких узлов</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.parent.id_for_label }}" class="form-label">
+                                Родительская ревизия
+                            </label>
+                            {{ form.parent }}
+                            {% if form.parent.errors %}
+                                <div class="text-danger small">{{ form.parent.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Опционально</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.release_date.id_for_label }}" class="form-label">
+                                Дата выпуска
+                            </label>
+                            {{ form.release_date }}
+                            {% if form.release_date.errors %}
+                                <div class="text-danger small">{{ form.release_date.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">
+                                Изображение
+                            </label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="text-danger small">{{ form.image.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Загрузите изображение (JPG, PNG, GIF и т.д.)</small>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                Описание
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.file.id_for_label }}" class="form-label">
+                                Файл документа
+                            </label>
+                            {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="text-danger small">{{ form.file.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Загрузите файл (любой формат)</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'main:astral_revisions_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

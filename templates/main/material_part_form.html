@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.serial.id_for_label }}" class="form-label">
+                                Серийный номер <span class="text-danger">*</span>
+                            </label>
+                            {{ form.serial }}
+                            {% if form.serial.errors %}
+                                <div class="text-danger small">{{ form.serial.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.astral_revision.id_for_label }}" class="form-label">
+                                Астральная ревизия <span class="text-danger">*</span>
+                            </label>
+                            {{ form.astral_revision }}
+                            {% if form.astral_revision.errors %}
+                                <div class="text-danger small">{{ form.astral_revision.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.astral_year.id_for_label }}" class="form-label">
+                                Год выпуска <span class="text-danger">*</span>
+                            </label>
+                            {{ form.astral_year }}
+                            {% if form.astral_year.errors %}
+                                <div class="text-danger small">{{ form.astral_year.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.astral_manufacturer.id_for_label }}" class="form-label">
+                                Производитель <span class="text-danger">*</span>
+                            </label>
+                            {{ form.astral_manufacturer }}
+                            {% if form.astral_manufacturer.errors %}
+                                <div class="text-danger small">{{ form.astral_manufacturer.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.parent.id_for_label }}" class="form-label">
+                                Родительский узел
+                            </label>
+                            {{ form.parent }}
+                            {% if form.parent.errors %}
+                                <div class="text-danger small">{{ form.parent.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Опционально</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'main:material_parts_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

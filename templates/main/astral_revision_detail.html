@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load b64filters %}
+
+{% block title %}{{ revision.name }} - Астральная ревизия - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-cogs me-2"></i>{{ revision.name }}</h2>
+                <small class="text-muted">{{ revision.astral_part.name }}</small>
+            </div>
+            <div class="btn-group" role="group">
+                <a href="{% url 'main:astral_revisions_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>К списку
+                </a>
+                {% if is_admin %}
+                    <a href="{% url 'main:astral_revision_edit' revision.id %}" class="btn btn-warning">
+                        <i class="fas fa-edit me-1"></i>Редактировать
+                    </a>
+                    <a href="{% url 'main:astral_revision_delete' revision.id %}" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Удалить
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle me-2"></i>Информация о ревизии</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Название:</strong><br>
+                                <span class="text-primary fs-5">{{ revision.name }}</span>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Узел:</strong><br>
+                                <a href="{% url 'main:astral_part_detail' revision.astral_part.id %}">
+                                    {{ revision.astral_part.name }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Тип устройства:</strong><br>
+                                <span class="badge bg-secondary">
+                                    {{ revision.astral_part.astral_variant.astral_type.name }}
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Вариант:</strong><br>
+                                {{ revision.astral_part.astral_variant.name }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Дата выпуска:</strong><br>
+                                {{ revision.release_date|date:"d.m.Y"|default:"Не указана" }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Родительская ревизия:</strong><br>
+                                {% if revision.parent %}
+                                    <a href="{% url 'main:astral_revision_detail' revision.parent.id %}" class="badge bg-info text-decoration-none">
+                                        {{ revision.parent.name }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">Корневая ревизия</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if revision.description %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <strong>Описание:</strong><br>
+                                {{ revision.description|linebreaks }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if revision.files %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <strong>Файлы:</strong><br>
+                                <pre class="bg-light p-2">{{ revision.files }}</pre>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if material_parts %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-microchip me-2"></i>Материальные узлы ({{ material_parts|length }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Серийный номер</th>
+                                        <th>Производитель</th>
+                                        <th>Год</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for part in material_parts %}
+                                        <tr>
+                                            <td>{{ part.serial }}</td>
+                                            <td>{{ part.astral_manufacturer.name }}</td>
+                                            <td>{{ part.astral_year.year }}</td>
+                                            <td>
+                                                <a href="{% url 'main:material_part_detail' part.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                {% if revision.image %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6><i class="fas fa-image me-2"></i>Изображение</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="data:image/png;base64,{{ revision.image|b64encode }}"
+                             alt="Изображение ревизии"
+                             class="img-fluid rounded">
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6><i class="fas fa-qrcode me-2"></i>QR-код ссылки</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{ qr_url }}" alt="QR-код ссылки" class="img-fluid mb-2">
+                        <p class="small text-muted">Сканируйте для перехода на страницу ревизии</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h6><i class="fas fa-qrcode me-2"></i>QR-код информации</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{ qr_info }}" alt="QR-код информации" class="img-fluid mb-2">
+                        <p class="small text-muted">Информация для оффлайн чтения</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

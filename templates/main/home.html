@@ -5,60 +5,127 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+        <div class="jumbotron text-white p-5 rounded mb-4">
             <h1 class="display-4">
                 <i class="fas fa-microchip me-3"></i>
                 Добро пожаловать в НТДЦ
             </h1>
             <p class="lead">Система электронного сопровождения производства опытных образцов</p>
-            <hr class="my-4">
-            <p>Управляйте устройствами, отслеживайте операции и контролируйте производственные процессы.</p>
+            <hr class="my-4 bg-white">
+            <p>Управляйте материальными узлами, отслеживайте операции и контролируйте производственные процессы.</p>
         </div>
 
-        <div class="row">
+        {% if user.is_authenticated %}
+        <div class="row g-4">
             <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Управление устройствами</h5>
-                        <p class="card-text">Регистрация, отслеживание и управление всеми устройствами в производстве.</p>
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'main:devices_list' %}" class="btn btn-primary btn-sm mt-2">
-                                <i class="fas fa-arrow-right me-1"></i>Перейти
-                            </a>
-                        {% endif %}
+                <div class="card home-card text-center h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3">
+                            <i class="fas fa-microchip fa-4x" style="color: #667eea;"></i>
+                        </div>
+                        <h5 class="card-title">Материальные узлы</h5>
+                        <p class="card-text flex-grow-1">Регистрация и управление реальными узлами устройств с серийными номерами и полной историей операций.</p>
+                        <a href="{% url 'main:material_parts_list' %}" class="btn btn-primary btn-lg mt-3">
+                            <i class="fas fa-arrow-right me-2"></i>Перейти
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="fas fa-cogs fa-3x text-info mb-3"></i>
-                        <h5 class="card-title">Детали и узлы</h5>
-                        <p class="card-text">Управление каталогом деталей и узлов, создание иерархической структуры.</p>
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'main:parts_list' %}" class="btn btn-info btn-sm mt-2">
-                                <i class="fas fa-arrow-right me-1"></i>Перейти
-                            </a>
-                        {% endif %}
+                <div class="card home-card text-center h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3">
+                            <i class="fas fa-history fa-4x" style="color: #11998e;"></i>
+                        </div>
+                        <h5 class="card-title">Журнал операций</h5>
+                        <p class="card-text flex-grow-1">Ведение записей всех операций с узлами, их перемещений, статусов и результатов выполнения.</p>
+                        <a href="{% url 'main:operations_list' %}" class="btn btn-success btn-lg mt-3">
+                            <i class="fas fa-arrow-right me-2"></i>Перейти
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <i class="fas fa-history fa-3x text-success mb-3"></i>
-                        <h5 class="card-title">История операций</h5>
-                        <p class="card-text">Ведение записей всех операций с устройствами, их перемещений и результатов.</p>
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'main:journal_list' %}" class="btn btn-success btn-sm mt-2">
-                                <i class="fas fa-arrow-right me-1"></i>Перейти
-                            </a>
-                        {% endif %}
+                <div class="card home-card text-center h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3">
+                            <i class="fas fa-cogs fa-4x" style="color: #4facfe;"></i>
+                        </div>
+                        <h5 class="card-title">Астральные ревизии</h5>
+                        <p class="card-text flex-grow-1">Управление версиями узлов устройств, спецификациями, технической документацией и файлами.</p>
+                        <a href="{% url 'main:astral_revisions_list' %}" class="btn btn-info btn-lg mt-3">
+                            <i class="fas fa-arrow-right me-2"></i>Перейти
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <div class="card home-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-sitemap me-2" style="color: #f093fb;"></i>Астральные узлы
+                        </h5>
+                        <p class="card-text">Справочник типов и вариантов узлов устройств, базовая структура изделий.</p>
+                        <a href="{% url 'main:astral_parts_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-1"></i>Перейти к каталогу
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% if user.is_staff or user.is_superuser %}
+            <div class="col-md-4">
+                <div class="card home-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-tools me-2" style="color: #764ba2;"></i>Панель управления
+                        </h5>
+                        <p class="card-text">Управление справочниками, пользователями, настройками системы и правами доступа.</p>
+                        <a href="{% url 'admin:index' %}" class="btn btn-outline-danger">
+                            <i class="fas fa-cog me-1"></i>Админ панель
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="col-md-4">
+                <div class="card home-card h-100" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-chart-line me-2" style="color: #667eea;"></i>Статистика
+                        </h5>
+                        <div class="row text-center mt-3">
+                            <div class="col-6">
+                                <h3 class="text-primary">{{ total_parts|default:"0" }}</h3>
+                                <small class="text-muted">Материальных узлов</small>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="text-success">{{ total_operations|default:"0" }}</h3>
+                                <small class="text-muted">Операций</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card" style="background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%); border-left: 4px solid #4facfe;">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-lock fa-3x mb-3" style="color: #4facfe;"></i>
+                        <h4><i class="fas fa-info-circle me-2"></i>Для доступа к системе необходимо авторизоваться</h4>
+                        <p class="text-muted mt-3">Войдите в систему, чтобы получить доступ ко всем функциям управления производством</p>
+                        <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-lg mt-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти в систему
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

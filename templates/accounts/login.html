@@ -5,26 +5,37 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-5">
-        <div class="card">
-            <div class="card-header">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <div class="mb-3 mt-2">
+                    <i class="fas fa-user-circle fa-4x" style="color: #667eea;"></i>
+                </div>
                 <h4><i class="fas fa-sign-in-alt me-2"></i>Вход в систему</h4>
+                <p class="text-white mb-0 small">Введите ваши учетные данные</p>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
 
-                    <div class="mb-3">
-                        <label for="id_username" class="form-label">Имя пользователя</label>
-                        <input type="text" name="username" class="form-control" id="id_username" required>
+                    <div class="mb-4">
+                        <label for="id_username" class="form-label">
+                            <i class="fas fa-user me-1"></i>Имя пользователя
+                        </label>
+                        <input type="text" name="username" class="form-control form-control-lg"
+                               id="id_username" placeholder="Введите имя пользователя" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="id_password" class="form-label">Пароль</label>
-                        <input type="password" name="password" class="form-control" id="id_password" required>
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>Пароль
+                        </label>
+                        <input type="password" name="password" class="form-control form-control-lg"
+                               id="id_password" placeholder="Введите пароль" required>
                     </div>
 
                     {% if form.errors %}
                         <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
                             {% for field, errors in form.errors.items %}
                                 {% for error in errors %}
                                     {{ error }}
@@ -34,16 +45,16 @@
                     {% endif %}
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-sign-in-alt me-1"></i>Войти
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти в систему
                         </button>
                     </div>
                 </form>
-
-                <hr>
-                <div class="text-center">
-                    <p>Нет аккаунта? <a href="{% url 'accounts:register' %}">Зарегистрироваться</a></p>
-                </div>
+            </div>
+            <div class="card-footer text-center bg-light">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt me-1"></i>Защищенный вход в систему НТДЦ
+                </small>
             </div>
         </div>
     </div>

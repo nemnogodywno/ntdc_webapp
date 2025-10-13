@@ -40,10 +40,18 @@ def get_device_info_qr(device):
     """
     Генерирует QR-код с текстовой информацией об устройстве для оффлайн чтения
     """
-    parts_list = ', '.join([part.name for part in device.parts.all()])
+    # Формируем список экземпляров деталей с серийными номерами
+    part_instances = device.part_instances.all()
+    if part_instances.exists():
+        parts_list = ', '.join([f"{inst.part.name} (S/N: {inst.serial})" for inst in part_instances])
+    else:
+        parts_list = 'Не указано'
 
-    info_text = f"""УСТРОЙСТВО: {device.serial}
-МОДЕЛИ/УЗЛЫ: {parts_list if parts_list else 'Не указано'}
+    device_name = device.name if device.name else device.serial
+
+    info_text = f"""УСТРОЙСТВО: {device_name}
+СЕРИЙНЫЙ №: {device.serial}
+СОСТАВ: {parts_list}
 ОПИСАНИЕ: {device.desc if device.desc else 'Не указано'}
 СИСТЕМА: НТДЦ"""
 
@@ -64,11 +72,78 @@ def get_part_info_qr(part):
     """
     parent_info = f"РОДИТЕЛЬ: {part.parent.name}" if part.parent else "КОРНЕВОЙ УЗЕЛ"
 
+    # Добавляем информацию о количестве экземпляров
+    instances_count = part.instances.count()
+    instances_info = f"ЭКЗЕМПЛЯРОВ: {instances_count}"
+
     info_text = f"""ДЕТАЛЬ/УЗЕЛ: {part.name}
 ДЕЦИМАЛЬНЫЙ №: {part.decimal_num}
 ТИП: {part.type.name}
 {parent_info}
+{instances_info}
 ОПИСАНИЕ: {part.desc if part.desc else 'Не указано'}
+СИСТЕМА: НТДЦ"""
+
+    return generate_qr_code(info_text, size=(250, 250))
+
+
+# ============== QR-коды для материальных узлов ==============
+
+def get_material_part_url_qr(part, request):
+    """
+    Генерирует QR-код со ссылкой на страницу материального узла
+    """
+    url = request.build_absolute_uri(f'/material-parts/{part.id}/')
+    return generate_qr_code(url)
+
+
+def get_material_part_info_qr(part):
+    """
+    Генерирует QR-код с текстовой информацией о материальном узле для оффлайн чтения
+    """
+    astral_part_name = part.astral_revision.astral_part.name
+    astral_type = part.astral_revision.astral_part.astral_variant.astral_type.name
+    revision_name = part.astral_revision.name
+    manufacturer = part.astral_manufacturer.name
+    year = part.astral_year.year
+
+    info_text = f"""МАТЕРИАЛЬНЫЙ УЗЕЛ
+S/N: {part.serial}
+УЗЕЛ: {astral_part_name}
+ТИП: {astral_type}
+РЕВИЗИЯ: {revision_name}
+ПРОИЗВОДИТЕЛЬ: {manufacturer}
+ГОД: {year}
+СИСТЕМА: НТДЦ"""
+
+    return generate_qr_code(info_text, size=(250, 250))
+
+
+# ============== QR-коды для астральных ревизий ==============
+
+def get_astral_revision_url_qr(revision, request):
+    """
+    Генерирует QR-код со ссылкой на страницу астральной ревизии
+    """
+    url = request.build_absolute_uri(f'/astral-revisions/{revision.id}/')
+    return generate_qr_code(url)
+
+
+def get_astral_revision_info_qr(revision):
+    """
+    Генерирует QR-код с текстовой информацией об астральной ревизии для оффлайн чтения
+    """
+    astral_part_name = revision.astral_part.name
+    astral_type = revision.astral_part.astral_variant.astral_type.name
+    parent_info = f"РОДИТЕЛЬ: {revision.parent.name}" if revision.parent else "КОРНЕВАЯ РЕВИЗИЯ"
+    release_date = revision.release_date.strftime("%d.%m.%Y") if revision.release_date else "Не указана"
+
+    info_text = f"""АСТРАЛЬНАЯ РЕВИЗИЯ
+НАЗВАНИЕ: {revision.name}
+УЗЕЛ: {astral_part_name}
+ТИП: {astral_type}
+{parent_info}
+ДАТА ВЫПУСКА: {release_date}
 СИСТЕМА: НТДЦ"""
 
     return generate_qr_code(info_text, size=(250, 250))

@@ -13,22 +13,9 @@
                 <div class="card border-primary">
                     <div class="card-body text-center">
                         <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Устройства</h5>
-                        <p class="card-text">Просмотр и управление устройствами</p>
-                        <a href="{% url 'main:devices_list' %}" class="btn btn-primary">
-                            <i class="fas fa-arrow-right me-1"></i>Перейти
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card border-info">
-                    <div class="card-body text-center">
-                        <i class="fas fa-cogs fa-3x text-info mb-3"></i>
-                        <h5 class="card-title">Детали/Узлы</h5>
-                        <p class="card-text">Управление каталогом деталей и узлов</p>
-                        <a href="{% url 'main:parts_list' %}" class="btn btn-info">
+                        <h5 class="card-title">Материальные узлы</h5>
+                        <p class="card-text">Управление реальными узлами с серийными номерами</p>
+                        <a href="{% url 'main:material_parts_list' %}" class="btn btn-primary">
                             <i class="fas fa-arrow-right me-1"></i>Перейти
                         </a>
                     </div>
@@ -39,9 +26,35 @@
                 <div class="card border-success">
                     <div class="card-body text-center">
                         <i class="fas fa-history fa-3x text-success mb-3"></i>
-                        <h5 class="card-title">История операций</h5>
+                        <h5 class="card-title">Журнал операций</h5>
                         <p class="card-text">Ведение записей операций и перемещений</p>
-                        <a href="{% url 'main:journal_list' %}" class="btn btn-success">
+                        <a href="{% url 'main:operations_list' %}" class="btn btn-success">
+                            <i class="fas fa-arrow-right me-1"></i>Перейти
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-info">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cogs fa-3x text-info mb-3"></i>
+                        <h5 class="card-title">Астральные ревизии</h5>
+                        <p class="card-text">Управление версиями узлов устройств</p>
+                        <a href="{% url 'main:astral_revisions_list' %}" class="btn btn-info">
+                            <i class="fas fa-arrow-right me-1"></i>Перейти
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-secondary">
+                    <div class="card-body text-center">
+                        <i class="fas fa-sitemap fa-3x text-secondary mb-3"></i>
+                        <h5 class="card-title">Астральные узлы</h5>
+                        <p class="card-text">Справочник типов и вариантов узлов</p>
+                        <a href="{% url 'main:astral_parts_list' %}" class="btn btn-secondary">
                             <i class="fas fa-arrow-right me-1"></i>Перейти
                         </a>
                     </div>
@@ -49,20 +62,60 @@
             </div>
 
             {% if user.is_staff or user.is_superuser %}
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card border-warning">
-                        <div class="card-body text-center">
-                            <i class="fas fa-cogs fa-3x text-warning mb-3"></i>
-                            <h5 class="card-title">Администрирование</h5>
-                            <p class="card-text">Управление системой</p>
-                            <a href="{% url 'main:admin_panel' %}" class="btn btn-warning">
-                                <i class="fas fa-arrow-right me-1"></i>Перейти
-                            </a>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card border-danger">
+                    <div class="card-body text-center">
+                        <i class="fas fa-cog fa-3x text-danger mb-3"></i>
+                        <h5 class="card-title">Администрирование</h5>
+                        <p class="card-text">Управление системой</p>
+                        <a href="{% url 'admin:index' %}" class="btn btn-danger">
+                            <i class="fas fa-arrow-right me-1"></i>Админ панель
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if recent_operations %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-clock me-2"></i>Последние операции</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Дата/Время</th>
+                                        <th>Тип операции</th>
+                                        <th>Материальный узел</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for op in recent_operations %}
+                                    <tr>
+                                        <td>{{ op.datetime|date:"d.m.Y H:i" }}</td>
+                                        <td>{{ op.material_operation_type.name }}</td>
+                                        <td>
+                                            <a href="{% url 'main:material_part_detail' op.material_part.id %}">
+                                                {{ op.material_part.serial }}
+                                            </a>
+                                        </td>
+                                        <td><span class="badge bg-info">{{ op.material_status.name }}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

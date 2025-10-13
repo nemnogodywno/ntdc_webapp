@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.material_operation_type.id_for_label }}" class="form-label">
+                                Тип операции <span class="text-danger">*</span>
+                            </label>
+                            {{ form.material_operation_type }}
+                            {% if form.material_operation_type.errors %}
+                                <div class="text-danger small">{{ form.material_operation_type.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.material_user.id_for_label }}" class="form-label">
+                                Пользователь <span class="text-danger">*</span>
+                            </label>
+                            {{ form.material_user }}
+                            {% if form.material_user.errors %}
+                                <div class="text-danger small">{{ form.material_user.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.datetime.id_for_label }}" class="form-label">
+                                Дата и время <span class="text-danger">*</span>
+                            </label>
+                            {{ form.datetime }}
+                            {% if form.datetime.errors %}
+                                <div class="text-danger small">{{ form.datetime.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.material_part.id_for_label }}" class="form-label">
+                                Материальный узел <span class="text-danger">*</span>
+                            </label>
+                            {{ form.material_part }}
+                            {% if form.material_part.errors %}
+                                <div class="text-danger small">{{ form.material_part.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.material_status.id_for_label }}" class="form-label">
+                                Статус <span class="text-danger">*</span>
+                            </label>
+                            {{ form.material_status }}
+                            {% if form.material_status.errors %}
+                                <div class="text-danger small">{{ form.material_status.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.material_warehouse.id_for_label }}" class="form-label">
+                                Склад <span class="text-danger">*</span>
+                            </label>
+                            {{ form.material_warehouse }}
+                            {% if form.material_warehouse.errors %}
+                                <div class="text-danger small">{{ form.material_warehouse.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                Описание
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.file.id_for_label }}" class="form-label">
+                                Файл документа
+                            </label>
+                            {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="text-danger small">{{ form.file.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Загрузите файл (любой формат)</small>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">
+                                Изображение
+                            </label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="text-danger small">{{ form.image.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Загрузите изображение (JPG, PNG, GIF и т.д.)</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'main:operations_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление материального узла - НТДЦ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="fas fa-exclamation-triangle me-2"></i>Подтверждение удаления</h4>
+            </div>
+            <div class="card-body">
+                <p>Вы уверены, что хотите удалить материальный узел?</p>
+
+                <div class="alert alert-warning">
+                    <strong>Серийный номер:</strong> {{ part.serial }}<br>
+                    <strong>Узел:</strong> {{ part.astral_revision.astral_part.name }}<br>
+                    <strong>Производитель:</strong> {{ part.astral_manufacturer.name }}
+                </div>
+
+                <p class="text-danger">
+                    <i class="fas fa-exclamation-circle me-1"></i>
+                    <strong>Внимание!</strong> Это действие необратимо. Все связанные операции также будут удалены.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'main:material_part_detail' part.id %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Удалить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
