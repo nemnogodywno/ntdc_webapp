@@ -40,8 +40,8 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8000:8000"
-    command: ["gunicorn", "webapp.wsgi:application", "--bind", "0.0.0.0:8000", "--workers=3", "--timeout=60"]
+      - "80:80"
+    #command: ["gunicorn", "webapp.wsgi:application", "--bind", "0.0.0.0:80", "--workers=3", "--timeout=60"]
 
 volumes:
   pgdata:

@@ -118,6 +118,7 @@ select[multiple] option:checked {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none; /* чтобы оверлей не перекрывал клики по кнопкам */
 }
 
 .home-card:hover::before {
@@ -186,6 +187,9 @@ select[multiple] option:checked {
     padding: 0.5rem 1.2rem;
     transition: all 0.3s ease;
     border: none;
+    display: inline-block; /* вместо inline-flex */
+    text-align: center;    /* центрируем содержимое */
+    pointer-events: auto; /* гарантируем кликабельность кнопок */
 }
 
 .btn:hover {

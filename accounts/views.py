@@ -3,6 +3,9 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.contrib.auth import authenticate
 from .forms import CustomUserCreationForm
 
 class CustomLoginView(LoginView):
@@ -31,3 +34,26 @@ def register_view(request):
         form = CustomUserCreationForm()
 
     return render(request, 'accounts/register.html', {'form': form})
+
+
+@csrf_exempt
+def test_login_view(request):
+    """Упрощённый login без CSRF для нагрузочного тестирования Locust.
+    НЕ использовать в продакшене.
+    Ожидает POST с полями `username` и `password` и логинит через Django auth.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'detail': 'Method not allowed'}, status=405)
+
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    if not username or not password:
+        return JsonResponse({'detail': 'Missing credentials'}, status=400)
+
+    user = authenticate(request, username=username, password=password)
+    if user is None:
+        return JsonResponse({'detail': 'Invalid credentials'}, status=403)
+
+    login(request, user)
+    return JsonResponse({'detail': 'ok'}, status=200)

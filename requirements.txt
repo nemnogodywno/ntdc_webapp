@@ -6,3 +6,4 @@ gunicorn==21.2.0
 pillow==11.3.0
 qrcode==8.2
 coverage==7.4.1
+locust==2.20.0
