@@ -20,3 +20,8 @@ class TestAccountsViews(TestCase):
         self.client.login(username='u', password='p')
         resp = self.client.get(reverse('accounts:logout'))
         self.assertEqual(resp.status_code, 302)
+
+    def test_login_post_failure(self):
+        resp = self.client.post(reverse('accounts:login'),
+                               data={'username': 'u', 'password': 'wrong'})
+        self.assertEqual(resp.status_code, 200)

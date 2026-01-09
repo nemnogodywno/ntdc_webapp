@@ -38,25 +38,8 @@
                                 <strong>Название:</strong><br>
                                 <span class="text-primary fs-5">{{ revision.name }}</span>
                             </div>
-                            <div class="col-md-6">
-                                <strong>Узел:</strong><br>
-                                <a href="{% url 'main:astral_part_detail' revision.astral_part.id %}">
-                                    {{ revision.astral_part.name }}
-                                </a>
-                            </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <strong>Тип устройства:</strong><br>
-                                <span class="badge bg-secondary">
-                                    {{ revision.astral_part.astral_variant.astral_type.name }}
-                                </span>
-                            </div>
-                            <div class="col-md-6">
-                                <strong>Вариант:</strong><br>
-                                {{ revision.astral_part.astral_variant.name }}
-                            </div>
-                        </div>
+
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <strong>Дата выпуска:</strong><br>
@@ -73,6 +56,7 @@
                                 {% endif %}
                             </div>
                         </div>
+
                         {% if revision.description %}
                         <hr>
                         <div class="row">
@@ -82,17 +66,65 @@
                             </div>
                         </div>
                         {% endif %}
-                        {% if revision.files %}
+
+                        {% if revision.file %}
                         <hr>
                         <div class="row">
                             <div class="col-12">
-                                <strong>Файлы:</strong><br>
-                                <pre class="bg-light p-2">{{ revision.files }}</pre>
+                                <strong>Файл:</strong><br>
+                                <a href="{{ revision.file.url }}" target="_blank" class="btn btn-secondary btn-sm mt-1 text-white">
+                                    {{ revision.file|basename }}
+                                </a>
                             </div>
                         </div>
                         {% endif %}
                     </div>
                 </div>
+
+                {% if revision.astral_parts.all %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-sitemap me-2"></i>Использованные астральные узлы ({{ revision.astral_parts.all|length }})</h5>
+                    </div>
+                    <div class="card-body">
+                        {% with parts=revision.astral_parts.all %}
+                            {% if parts %}
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Название узла</th>
+                                                <th>Децимальный номер</th>
+                                                <th>Тип / Вариант</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for part in parts %}
+                                                <tr>
+                                                    <td>{{ part.name }}</td>
+                                                    <td>{{ part.decimal_num|default:"—" }}</td>
+                                                    <td>
+                                                        {{ part.astral_variant.astral_type.name }} / {{ part.astral_variant.name }}
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <a href="{% url 'main:astral_part_detail' part.id %}"
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-muted mb-0">Для этой ревизии астральные узлы не указаны.</p>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                {% endif %}
 
                 {% if material_parts %}
                 <div class="card">
@@ -169,4 +201,3 @@
     </div>
 </div>
 {% endblock %}
-

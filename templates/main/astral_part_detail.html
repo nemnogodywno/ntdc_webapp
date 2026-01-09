@@ -18,6 +18,9 @@
                     <a href="{% url 'main:astral_part_edit' part.id %}" class="btn btn-outline-warning">
                         <i class="fas fa-edit me-1"></i>Редактировать
                     </a>
+                    <a href="{% url 'main:astral_part_delete' part.id %}" class="btn btn-outline-danger">
+                        <i class="fas fa-trash me-1"></i>Удалить
+                    </a>
                 {% endif %}
             </div>
         </div>

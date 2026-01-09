@@ -505,3 +505,21 @@ def astral_part_edit(request, part_id):
         'title': f'Редактирование {part.name}'
     }
     return render(request, 'main/astral_part_form.html', context)
+
+
+@login_required
+@user_passes_test(is_admin)
+def astral_part_delete(request, part_id):
+    """Удаление астрального узла"""
+    part = get_object_or_404(AstralPart, pk=part_id)
+
+    if request.method == 'POST':
+        name = part.name
+        part.delete()
+        messages.success(request, f'Астральный узел {name} успешно удален!')
+        return redirect('main:astral_parts_list')
+
+    context = {
+        'part': part,
+    }
+    return render(request, 'main/astral_part_confirm_delete.html', context)

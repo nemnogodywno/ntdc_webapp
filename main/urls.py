@@ -34,4 +34,5 @@ urlpatterns = [
     path('astral-parts/<int:part_id>/', views.astral_part_detail, name='astral_part_detail'),
     path('astral-parts/create/', views.astral_part_create, name='astral_part_create'),
     path('astral-parts/<int:part_id>/edit/', views.astral_part_edit, name='astral_part_edit'),
+    path('astral-parts/<int:part_id>/delete/', views.astral_part_delete, name='astral_part_delete'),
 ]
